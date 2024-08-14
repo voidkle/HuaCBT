@@ -28,7 +28,7 @@ class UsersDefault extends Seeder
         ]);
 
         Users::create([
-            'username' => 'admin',
+            'username' => 'fuhua',
             'password' => password_hash('admin',PASSWORD_DEFAULT),
             'nis' => 1232,
             'level_id' => 1, // Admin level
