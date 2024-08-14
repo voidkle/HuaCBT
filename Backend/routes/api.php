@@ -9,19 +9,32 @@ use App\Http\Controllers\AuthController;
 // All Users & Guests API
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
+Route::post('/phptest',[AuthController::class, 'phptest']);
 
-Route::middleware(['admin'])->group(function () {
-    // Admin only
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/kelas', [KelasController::class, 'store']);
-    Route::put('/kelas/{id}', [KelasController::class, 'update']);
-    Route::delete('/kelas/{id}', [KelasController::class, 'delete']);
-});
 Route::middleware(['auth'])->group(function () {
-    // All Users Granted this http request lol
-    Route::get('/kelas/{id}', [KelasController::class, 'show']);
-    Route::get('/dashboard', [UserController::class, 'user_id']);
+    Route::prefix('dashboard')->group(function(){
+        Route::middleware(['admin'])->group(function () {
+            // Admin only
+            Route::prefix('admin')->group(function(){
+                Route::post('/register', [AuthController::class, 'register']);
+                Route::prefix('dashboard')->group(function (){
+                    Route::get('/', [DashboardController::class, 'adminindex']);
+                    Route::prefix('kelas')->group(function (){
+                        Route::get('/',[KelasController::class, 'index']);
+                        Route::post('/', [KelasController::class, 'store']);
+                        Route::put('/{id}', [KelasController::class, 'update']);
+                        Route::delete('/{id}', [KelasController::class, 'delete']);
+                    });
+                });
+            });
+        });
+        Route::prefix('ujian')->group(function (){
+
+        });
+    });
 });
+
+
 
 Route::middleware(['teacher'])->group(function () {
     // Admin & Teacher only
@@ -29,8 +42,10 @@ Route::middleware(['teacher'])->group(function () {
 });
 Route::middleware(['student'])->group(function () {
     // Student only
-    Route::get('/ujian/{id_ujian}/{session}',[StudentController::class,'session_ujian']);
-    Route::get('/ujian/{id_ujian}',[StudentController::class,'ujian']);
+    Route::prefix('ujian')->group(function (){
+        Route::get('/{id_ujian}/{session}',[StudentController::class,'session_ujian']);
+        Route::get('/{id_ujian}',[StudentController::class,'ujian']);
+    });
 });
 
 

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions;
 
 class AuthController extends Controller
 {
@@ -68,7 +68,7 @@ class AuthController extends Controller
         $vlid = $this->validator($req);
 
         if ($vlid) {
-            return response()->json($vlid, 401);
+            return response()->json([$vlid], 401);
         }
 
         $creds = $req->only('username', 'password');
@@ -85,7 +85,6 @@ class AuthController extends Controller
 
     public function logout(Request $req)
     {
-        
         $token = JWTAuth::getToken();
         $logout = JWTAuth::invalidate($token);
         return response()->json(['message' => 'Successfully logged out']);
@@ -93,24 +92,34 @@ class AuthController extends Controller
 
     public function user()
     {
-        $user = auth()->user();
+        $user = JWTAuth::user();
         try {
-            if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['message' => 'User not found'], 404);
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json(['message' => 'Not logged in'], 401);
             }
         } 
         catch(Exception $e){
-            if($e instanceof Tymon\JWTAuth\Exceptions\TokenBlacklistedException){
+            if($e instanceof TokenBlacklistedException){
                 return response()->json(['message' => 'Token blacklisted'], 422);
             }
-            else if($e instanceof Tymon\JWTAuth\Exceptions\TokenExpiredException){
+            else if($e instanceof TokenExpiredException){
                 return response()->json(['message' => 'Token expired'], 401);
             }
-            else if($e instanceof Tymon\JWTAuth\Exceptions\TokenInvalidException){
+            else if($e instanceof TokenInvalidException){
                 return response()->json(['message' => 'Token invalid'], 401);
             }
             return response()->json(['message' => 'Token Absent'], 422);
         }
         return response()->json(compact('user'));
+    }
+
+    public function phptest(Request $r){
+        $p = $r->only(['username', 'username']);
+        if (isset($p['username']) && $p['username'] === 'username') {
+            return $p['username'];
+        }
+        else{
+            return $r->fingerprint();
+        }
     }
 }

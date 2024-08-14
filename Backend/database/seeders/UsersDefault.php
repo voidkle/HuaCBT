@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Users;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -13,16 +14,22 @@ class UsersDefault extends Seeder
      */
     public function run(): void
     {
-        DB::insert('insert into level (level_id, level, created_at, updated_at) values (?, ?, ?, ?), (?, ?, ?, ?), (?, ?, ?, ?)', 
-        [1, 'Admin', now(), now()],
-        [2, 'Guru', now(), now()],
-        [3, 'Peserta', now(), now()]
-        );
-        DB::insert('insert into kelas (kelas_id, nama_kelas, created_at, updated_at) values (?, ?, ?, ?)',
-        [1, 'Kelas Default', now(), now()]);
+        DB::table('level')->insert([
+            ['level_id' => 1, 'level' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
+            ['level_id' => 2, 'level' => 'Guru', 'created_at' => now(), 'updated_at' => now()],
+            ['level_id' => 3, 'level' => 'Peserta', 'created_at' => now(), 'updated_at' => now()]
+        ]);
+
+        DB::table('kelas')->insert([
+            'kelas_id' => 1,
+            'nama_kelas' => 'Kelas Default',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
         Users::create([
             'username' => 'admin',
-            'password' => password_hash('admin', PASSWORD_DEFAULT),
+            'password' => password_hash('admin',PASSWORD_DEFAULT),
             'nis' => 1232,
             'level_id' => 1, // Admin level
             'kelas_id' => 1, // Default class id
