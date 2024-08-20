@@ -80,13 +80,22 @@ class AuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
         $token = JWTAuth::attempt($creds);
+        DB::table('user_activity')->insert([
+            'user_id' => auth()->id(),
+            'login_at' => now()
+        ]);
         return response()->json(compact('token'));
     }
 
     public function logout(Request $req)
     {
-        $token = JWTAuth::getToken();
-        $logout = JWTAuth::invalidate($token);
+        auth()->logout(true);
+
+        DB::table('user_activity')
+        ->where('user_id', auth()->id())
+        ->whereNull('logout_at')
+        ->update(['logout_at' => now()]);
+
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -113,13 +122,41 @@ class AuthController extends Controller
         return response()->json(compact('user'));
     }
 
+    public function loginStats(){
+        $userActivities = DB::table('user-activity')->get();
+        // Process data + aggregating the data to calculate login statistics :P
+        $stats = [];
+
+        foreach ($userActivities as $activity) {
+            $userId = $activity->user_id;
+            $loginTime = $activity->login_time;
+            $logoutTime = $activity->logout_time;
+
+            $duration = null;
+            if ($logoutTime) {
+                $duration = strtotime($logoutTime) - strtotime($loginTime);
+            }
+
+            if (!isset($stats[$userId])) {
+                $stats[$userId] = [
+                    'total_sessions' => 0,
+                    'total_time_logged_in' => 0,
+                ];
+            }
+
+            $stats[$userId]['total_sessions'] += 1;
+            $stats[$userId]['total_time_logged_in'] += $duration ?? 0;
+        }
+        return response()->json($stats);
+    }
+
     public function phptest(Request $r){
-        $p = $r->only(['username', 'username']);
-        if (isset($p['username']) && $p['username'] === 'username') {
-            return $p['username'];
+        if(Auth::check() == true){
+        $p = auth()->id();
+        return response()->json($p);
         }
         else{
-            return $r->fingerprint();
+            return 'kanjut';
         }
     }
 }

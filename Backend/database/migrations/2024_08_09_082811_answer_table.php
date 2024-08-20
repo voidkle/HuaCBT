@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('level', function (Blueprint $table) {
+        Schema::create('answer_test', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('level_id')->unique();
-            $table->string('level');
+            $table->unsignedBigInteger('answer_id');
+            $table->unsignedBigInteger('question_id');
+            $table->string('answer');
+            $table->boolean('true');
             $table->timestamps();
+            $table->foreign('question_id')->references('question_id')->on('question_test');
         });
     }
 
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('level');
+        Schema::dropIfExists('answer_test');
     }
 };

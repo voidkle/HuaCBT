@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        
+        Schema::create('tokens', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('token');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('tokens');
     }
 };

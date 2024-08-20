@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('level', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('level_id')->unique();
-            $table->string('level');
+        Schema::create('user_activity', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamp('login_at')->nullable();
+            $table->timestamp('logout_at')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('level');
+        Schema::dropIfExists('user_activity');
     }
 };

@@ -16,12 +16,13 @@ return new class extends Migration
             $table->string('username');
             $table->string('nis');
             $table->string('nama');
-            $table->unsignedBigInteger('kelas_id');
+            $table->unsignedBigInteger('class_id');
+            $table->unsignedBigInteger('user_id')->unique();
             $table->string('password');
             $table->unsignedBigInteger('level_id');
             $table->timestamps();
-            $table->foreign('kelas_id')->references('id')->on('kelas');
-            $table->foreign('level_id')->references('id')->on('level');
+            $table->foreign('class_id')->references('class_id')->on('classes');
+            $table->foreign('level_id')->references('level_id')->on('level');
         });
     }
 
