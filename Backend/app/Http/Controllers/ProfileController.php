@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
+use App\Models\Kelas;
 
 class ProfileController extends Controller
 {
@@ -28,8 +29,8 @@ class ProfileController extends Controller
                     $data = [
                         'username' => $user->username,
                         'nama' => $user->nama,
-                        'kelas' => $user->kelas_id->name ?? null,
-                        'Level' => 'Guru'
+                        'kelas' => $user->class->class ?? null,
+                        'Level' => 'Teacher'
                     ];
                     break;
                 case 3:
@@ -37,7 +38,7 @@ class ProfileController extends Controller
                         'username' => $user->username,
                         'nama' => $user->nama,
                         'nis' => $user->nis,
-                        'kelas' => $user->kelas_id->name ?? null,
+                        'kelas' => $user->class->class ?? null,
                         'Level' => 'Student'
                     ];
                     break;
@@ -51,8 +52,25 @@ class ProfileController extends Controller
         }
     }
 
-    public function change()
+    public function change(Request $req)
     {
         $user = auth()->user();
+
+        if(!empty($user)){
+            $req->validate([
+                'password' => 'required|string|min:8',
+                'username' => 'required|string|max:255',
+                'profile' => 'nullable|string',
+            ]);
+
+            $user->update([
+                'password' => password_hash($req->input('password')),
+                'username' => $req->input('username'),
+                'profile' => $req->input('profile')]);
+            return response()->json(['message' => 'Profile updated successfully'], 200);
+        }
+        else{
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
     }
 }

@@ -2,14 +2,11 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{vue,js,ts}",
-    "./node_modules/flowbite/**/*.js"
+    "./src/**/*.{js,ts,vue,jsx,tsx}"
   ],
-  darkMode: 'media',
   theme: {
     extend: {},
   },
-  plugins: [
-    require('flowbite/plugin')
-  ],
+  plugins: [require('tailwindcss-primeui')]
 }
+

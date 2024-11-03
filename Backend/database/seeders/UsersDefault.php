@@ -17,12 +17,12 @@ class UsersDefault extends Seeder
         DB::table('level')->insert([
             ['level_id' => 1, 'level' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
             ['level_id' => 2, 'level' => 'Guru', 'created_at' => now(), 'updated_at' => now()],
-            ['level_id' => 3, 'level' => 'Peserta', 'created_at' => now(), 'updated_at' => now()]
+            ['level_id' => 3, 'level' => 'Peserta', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         DB::table('classes')->insert([
             'class_id' => 1,
-            'class' => 'Kelas Default 0',
+            'class' => 'Admin',
             'created_at' => now(),
             'updated_at' => now()
         ]);

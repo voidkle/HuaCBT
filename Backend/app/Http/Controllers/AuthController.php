@@ -41,24 +41,29 @@ class AuthController extends Controller
         else{
             $creds = $req->validate([
                 'username' => 'required|string|unique:users',
-                'kelas_id' => 'required|numeric',
+                'class_id' => 'required|numeric',
                 'nis' => 'required|numeric',
                 'password' => 'required|string',
                 'level_id' => 'required|numeric',
                 'nama' => 'required|string'
             ]);
+            $lastUserId = DB::table('users')->max('user_id');
+            $newUserId = $lastUserId ? $lastUserId + 1 : 1;
+
             DB::insert('insert into users (
-            username, nama, nis, password, kelas_id, level_id, created_at, updated_at) values (?, ?, ?, ?, ?,?,?,?)', 
-            [
-                $creds['username'],
-                $creds['nama'],
-                $creds['nis'],
-                password_hash($creds['password'], PASSWORD_DEFAULT),
-                $creds['kelas_id'],
-                $creds['level_id'],
-                now(),
-                now()
-            ]);
+                user_id, username, nama, nis, password, class_id, level_id, created_at, updated_at) 
+                values (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                [
+                    $newUserId,
+                    $creds['username'],
+                    $creds['nama'],
+                    $creds['nis'],
+                    password_hash($creds['password'], PASSWORD_DEFAULT),
+                    $creds['class_id'],
+                    $creds['level_id'],
+                    now(),
+                    now()
+                ]);
             return response()->json(['message'=>'User successfully created!'], 200);
         }
     }
@@ -151,7 +156,7 @@ class AuthController extends Controller
     }
 
     public function phptest(Request $r){
-        if(Auth::check() == true){
+        if(Auth::check() == 1){
         $p = auth()->id();
         return response()->json($p);
         }

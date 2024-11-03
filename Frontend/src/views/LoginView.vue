@@ -1,33 +1,58 @@
 <template>
-<form class="max-w-sm mx-auto my-auto p-14 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 flex flex-col justify-center">
-    <div class="mb-5 flex justify-between items-end">
-        <h1 class="text-gray-900 dark:text-white text-4xl font-semibold">HuaCBT</h1>
-        <p class="text-gray-600 text-sm text-end">v.0.0.1</p>
+<Toast/>
+<form @submit.prevent="login">
+<div class="card">
+    <div class="flex flex-col gap-2 m-2">
+        <div class="flex flex-col gap-2">
+            <label for="username">Username</label>
+            <InputText id="username" v-model="username" aria-describedby="username-help" />
+        </div>
+    </div>  
+    <div class="flex flex-col gap-2 m-2">
+        <div class="flex flex-col gap-2">
+            <label for="username">Password</label>
+            <Password v-model="password" :feedback="false"/>
+        </div>
     </div>
-  <div class="mb-5">
-    <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
-    <input name="username" type="text" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="User0013" required />
-  </div>
-  <div class="mb-5">
-    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-    <input name="password" type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="******" required />
-  </div>
-  <div class="flex items-start mb-5">
-    <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Please call your supervisor<br> if you can't <strong>log-in</strong></label>
-  </div>
-  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+    <div class="flex flex-row gap-2 m-2">
+        <Button label="Submit" icon="fa-solid fa-arrow-right" iconPos="right" @click="login()" severity="contrast"/>
+    </div>
+</div>
 </form>
 </template>
 <script>
+import { useUserData } from '@/stores/Users'
+import Button from 'primevue/button'
+import Toast from 'primevue/toast'
+import Message from 'primevue/message'
+import InputText from 'primevue/inputtext'
+
 export default{
     data(){
-
+        return{
+            username: '',
+            password: ''
+        }
     },
     methods:{
-
+        async login() {
+            const userData = useUserData();
+            try {
+                await userData.authLogin(this.username, this.password);
+                this.toast(userData.message.severity,userData.message.message,userData.message.summary);
+                
+            } catch (error) {
+                this.toast('warn','An error occurred during login','Oops');
+            }
+        },
+        toast(status,message,summary){
+            this.$toast.add({ severity: status, summary: summary, detail: message, life: 3000 });
+        }
+    },
+    component:{
+        Button,Toast,InputText,Message
     },
     mounted(){
-
     }
 }
 </script>
