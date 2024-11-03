@@ -2,15 +2,20 @@
 
 namespace App\Models;
 
+use App\Models\Kelas;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Users extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
     protected $table = 'users';
+
+    public function class(){
+        return $this->belongsTo(Kelas::class, 'class_id');
+    }
     
     protected $fillable = ['username', 'nama','nis', 'kelas_id', 'password', 'level_id'];
 

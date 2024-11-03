@@ -8,12 +8,13 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       meta: {
-        name:i+"Dashboard"
+        name:i+"Dashboard",
+        auth:true
       },
       component: defineAsyncComponent(() => import('../layout/BaseLayout.vue')),
       children:[
         {
-          path:'',
+          path:'dashboard',
           name: 'Dashboard',
           meta: {
             name:i+"Dashboard"
@@ -31,7 +32,7 @@ const router = createRouter({
       component: defineAsyncComponent(() => import('../layout/AuthLayout.vue')),
       children:[
         {
-          path:'/login',
+          path:'login',
           name: 'Login',
           meta: {
             name:i+"Login"

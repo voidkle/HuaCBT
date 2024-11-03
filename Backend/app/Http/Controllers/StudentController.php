@@ -6,15 +6,24 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function index(){
+    public function list(){
         // Showing all student data
-        $user = DB::select("SELECT * FROM users WHERE level_id = ?", [3]);
-        return response()->json($user);
+        $t = DB::table('tests')->get();
+        return response()->json(['message' => 'Okay', 'data' => $t]);
     }
     public function session_ujian(){
         
     }
-    public function ujian(){
-
+    public function ujian($id){
+        $t = DB::select('select * from "tests" where level_id $id');
+        return response()->json(['message' => 'Okay', 'data' => $t]);
+    }
+    public function class($id){
+        $u = DB::table('users')
+            ->join('classes', 'users.class_id', '=', 'classes.id')
+            ->where('users.user_id', $id)
+            ->select('classes.class')
+            ->get();
+        return response()->json(['message' => 'Okay', 'data' => $u]);
     }
 }

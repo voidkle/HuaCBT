@@ -9,20 +9,16 @@ class KelasController extends Controller
 {
     public function index()
     {
-        $kelas = Kelas::all();
-        return response()->json($kelas);
+        $k = DB::table('classes')->get();
+        return response()->json(['message' => 'Data fetched','data' => $k]);
     }
 
-    public function store(Request $request)
+    public function store(Request $req)
     {
-        $kelas = Kelas::create($request->all());
-        return response()->json($kelas);
-    }
-
-    public function show($id)
-    {
-        $kelas = Kelas::findOrFail($id);
-        return response()->json($kelas);
+        return response()->json($req);
+        // $k = DB::table('')->insert([
+            
+        // ]);
     }
 
     public function update(Request $request, $id)

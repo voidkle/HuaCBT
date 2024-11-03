@@ -24,7 +24,7 @@ HuaCBT is a computer-based testing (CBT) web application that provides a streaml
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/your-username/HuaCBT.git
+    git clone https://github.com/voidkle/HuaCBT.git
     cd HuaCBT/Backend
     ```
 
@@ -67,7 +67,7 @@ HuaCBT is a computer-based testing (CBT) web application that provides a streaml
 ## Usage
 
 - Access the rest api via `http://localhost:8000` after starting the development server.
-- to access the vue frontend go to `http://localhost:3000` and you should be at Login page
+- to access the vue frontend go to `http://localhost:5173` and you should be at Login page
 - the default user for admin is `Username : fuhua, Password : admin`, and you should good to go.
 - The admin privilege is for adding Users, ban Test-taker, literally everything.
 
