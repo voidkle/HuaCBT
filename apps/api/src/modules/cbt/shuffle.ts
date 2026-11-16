@@ -1,0 +1,25 @@
+/** Small deterministic PRNG (mulberry32): the same seed always yields the same sequence. */
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Fisher-Yates with a seeded PRNG: a refresh (same attempt seed) must show the same order. */
+export function seededShuffle<T>(items: readonly T[], seed: number): T[] {
+  const out = [...items];
+  const rand = mulberry32(seed);
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}
+
+/** Derives a per-question seed from the attempt seed so option order differs between questions but is stable. */
+export const mix = (seed: number, salt: number) => (Math.imul(seed ^ 0x9e3779b9, 0x85ebca6b) + salt) | 0;
