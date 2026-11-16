@@ -1,0 +1,9 @@
+{
+  "name": "hua-ebl",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "api": "bun --cwd apps/api dev",
+    "web": "bun --cwd apps/web dev"
+  }
+}
